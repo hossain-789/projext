@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+    />
+    <title>Registration</title>
+  </head>
+
+  <body>
+    <form id="myID">
+      <input name="name" id="name" />
+      <input name="age" id="age" />
+      <button type="submit">submit</button>
+    </form>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/toastify-js"
+    ></script>
+
+    <script>
+      let form = document.getElementById("myID");
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        // getting the data
+        let name = document.getElementById("name").value;
+        let age = document.getElementById("age").value;
+
+        // validation
+        if (name.trim().length == 0) {
+          Toastify({
+            text: "Name can not be empty",
+            duration: 1000,
+            gravity: "top", // `top` or `bottom`
+            position: "right", // `left`, `center` or `right`
+            style: {
+              background: "red",
+            },
+          }).showToast();
+          return;
+        }
+
+        // validation
+        if (age.trim().length == 0) {
+          Toastify({
+            text: "Age can not be empty",
+            duration: 1000,
+            gravity: "top", // `top` or `bottom`
+            position: "right", // `left`, `center` or `right`
+            style: {
+              background: "red",
+            },
+          }).showToast();
+          return;
+        }
+
+        axios
+          .post(
+            "http://localhost/projext/server/data.php",
+            {
+              name: name,
+              age: age,
+            },
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          )
+          .then(function (response) {
+            console.log(response);
+            //validation
+            if (response.data.status === "success") {
+              Toastify({
+                text: "Data inserted",
+                duration: 1000,
+                gravity: "top", // `top` or `bottom`
+                position: "right", // `left`, `center` or `right`
+                stopOnFocus: true, // Prevents dismissing of toast on hover
+                style: {
+                  background: "green",
+                },
+              }).showToast();
+              document.getElementById("name").value = "";
+              document.getElementById("age").value = "";
+            } else {
+              Toastify({
+                text: "Something went wrong!!",
+                duration: 1000,
+                gravity: "top", // `top` or `bottom`
+                position: "right", // `left`, `center` or `right`
+                style: {
+                  background: "red",
+                },
+              }).showToast();
+            }
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      });
+    </script>
+  </body>
+</html>
